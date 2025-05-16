@@ -1,4 +1,5 @@
 import { PropsWithChildren } from 'react'
+import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
@@ -37,6 +38,8 @@ async function RootLayout({ children, params }: PropsWithChildren<DefaultPagePro
           </DictionaryProvider>
         </Provider>
       </body>
+
+      <Analytics />
     </html>
   )
 }
