@@ -1,0 +1,31 @@
+# #!/usr/bin/env sh
+
+validate_commit_message() {
+  BASE_ID="center-telegram-admin-dashboard"
+
+  # Regex for commit message format: [feat/fix] (scope): [id] msg
+  COMMIT_MSG_REGEX="^(feat|fix|fe|be|config)\([a-zA-Z0-9_-]+\): \[${BASE_ID}-[0-9]+\] .+"
+
+  # Get the commit message
+  COMMIT_MSG=$(cat "$1")
+
+  # Validate against the regex
+  if [[ ! $COMMIT_MSG =~ $COMMIT_MSG_REGEX ]]; then
+    echo "=== [ FAILED ] Invalid commit message format. Please follow the format: "
+    echo ""
+    echo ""
+    echo ""
+    echo "[feat/fix/fe/be/config](scope): [${BASE_ID}-id] msg"
+    echo "Example: feat(auth): [${BASE_ID}-123] Add login feature"
+    echo ""
+    echo ""
+    echo ""
+    exit 1
+  fi
+}
+
+# Validate commit message by calling the function
+validate_commit_message "$1"
+
+# If passed, continue with the commit
+echo "Commit message is valid."

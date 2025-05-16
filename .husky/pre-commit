@@ -1,0 +1,84 @@
+#!/usr/bin/env sh
+
+echo "🤗🤗🤗 Checking branch name, styling, testing and building your project before committing... 🤗🤗🤗"
+
+# Get the current branch name
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Adjusted regex to ensure proper branch format
+REGEX="^([0-9]+)-(feat|fix|fe|be|api)-([a-zA-Z0-9-]+)$"
+
+BASE_ID="center-telegram-admin-dashboard"
+
+# Check if the branch name matches the required format
+if [[ ! $BRANCH =~ $REGEX ]]; then
+  echo "=== [ FAILED ] Invalid branch name. Please use the format:"
+  echo ""
+  echo ""
+  echo ""
+  echo "<ID>-<feat/fix/fe/be/api>-<branch-name>"
+  echo ""
+  echo ""
+  echo ""
+  exit 1
+fi
+
+# Remove any existing swap files
+rm -f .git/.COMMIT_EDITMSG.swp
+
+# read -n1 -p "Do you rebase your branch with the latest main branch? [Y/n] " doit < /dev/tty
+# echo ""
+
+# if [ "$doit" = "y" ] || [ "$doit" = "Y" ]; then
+#   echo "✅ Continuing with commit..."
+# else
+#   echo "🔄 Automatically pulling and rebasing from main..."
+#   # Stash any changes including untracked files
+
+#   echo "🔄 Stashing changes..."
+#   git stash push -u || {
+#       echo "❌ Failed to stash changes"
+#       exit 1
+#   }
+
+#   # Fetch and rebase
+#   echo "🔄 Fetching and rebasing from main..."
+#   git fetch origin main
+#   git rebase origin/main || {
+#       git stash pop
+#       echo "❌ Rebase failed. Please resolve conflicts manually."
+#       exit 1
+#   }
+
+#   # Restore changes
+#   echo "🔄 Restoring changes..."
+#   git stash pop || {
+#       echo "❌ Failed to restore your changes"
+#       exit 1
+#   }
+
+#   echo "✅ Rebase completed successfully!"
+# fi
+
+# Add all changes after rebase
+
+pnpm lint --fix || (
+  echo "🐣 ❌ Eslint Checking ERROR. Please fix the linting errors and try again. ❌ 🐣"
+  false;
+)
+
+pnpm sort-json src/dictionaries/*.json || (
+  echo "🐣 ❌ Sort JSON ERROR. Please fix the sort JSON errors and try again. ❌ 🐣"
+  false;
+)
+
+echo "😋😋😋 ...Alright... Code looks good to me... Trying to building now.... 😋😋😋"
+
+pnpm build || (
+  echo "🐣 ❌ Build ERROR. Please fix the build errors and try again. ❌ 🐣"
+  false;
+)
+
+git add -A
+
+echo "🥳 🥳 ✅ GOOD TO GO. You can now commit your changes... ✅ 🥳 🥳"

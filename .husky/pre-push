@@ -1,0 +1,18 @@
+
+echo "🤗🤗🤗 Minh Anh Corp Pre-push Hook: Checking branch name... 🤗🤗🤗"
+
+PROTECTED_BRANCHES="^(master|develop|main)"
+
+if [[ $1 != *"$BRANCH"* ]]
+then
+  echo "🚫 [ FAILED ] You must use (git push origin $BRANCH)." && exit 1
+fi
+
+if [[ "$BRANCH" =~ $PROTECTED_BRANCHES ]]
+then
+  echo "🚫 [ FAILED ] Cannot push to remote $BRANCH branch, please create your own branch and use PR." && exit 1
+fi
+
+echo "✅ [ SUCCESS ] Finish checking branch name."
+
+exit 0
